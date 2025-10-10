@@ -12,6 +12,7 @@ Loading data
 library(p8105.datasets)
 library(dplyr)
 library(ggplot2)
+library(tidyr)
 data("instacart") 
 ```
 
@@ -52,7 +53,7 @@ ggsave("figures/Problem 1/aisle_plot.png", aisle_plot, width = 10, dpi = 300)
 
 #### Part d)
 ```{r}
-top_item <- instacart |> 
+top_item_table <- instacart |> 
   filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) |> 
   group_by(aisle, product_name) |>
   summarise(times_ordered = n()) |> 
@@ -60,5 +61,18 @@ top_item <- instacart |>
 ```
 
 #### Part e)
-
+```{r}
+mean_hour_table <- instacart |> 
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) |> 
+  group_by(product_name, order_dow) |> 
+  summarise(mean_hour = mean(order_hour_of_day)) |> 
+  mutate(order_dow = factor(order_dow,
+    levels = 0:6,
+    labels = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+  )) |>
+  pivot_wider(
+    names_from = order_dow,
+    values_from = mean_hour
+  )
+```
 
