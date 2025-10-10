@@ -1,0 +1,9 @@
+---
+title: "p8105_hw3_rl3616"
+author: "Ruipeng Li"
+date: "`r format(Sys.Date())`"
+output: github_document
+---
+
+# Problem 1
+
