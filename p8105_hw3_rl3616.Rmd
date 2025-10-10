@@ -77,7 +77,7 @@ mean_hour_table <- instacart |>
 
 # Problem 2
 
-Cleaning Zillow datasets(from homework 2)
+#### Cleaning Zillow datasets(from homework 2)
 ```{r}
 
 zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |> 
@@ -93,8 +93,15 @@ zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
   mutate(
     county_name = str_replace(county_name, " County", ""),
     date = str_replace(date, "x", ""),
-    date = ymd(date)
-    )
+    date = ymd(date),
+    borough = case_when(
+      county_name == "New York" ~ "Manhattan",
+      county_name == "Kings" ~ "Brooklyn",
+      county_name == "Queens" ~ "Queens",
+      county_name == "Bronx" ~ "Bronx",
+      county_name == "Richmond" ~ "Staten Island")
+    ) |> 
+   relocate("county_name","borough")
 
 ```
 
@@ -103,7 +110,22 @@ zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
 zip_count <- zip_zori_df |> 
   group_by(zip_code, county_name) |> 
   summarise(n_observed = n()) |> 
-  arrange(n_observed)
+  arrange(desc(n_observed))
 
 ```
 Using this data, we can see there are `r sum(zip_count$n_observed == 116)` ZIP codes are observed 116 times, and there are `r sum(zip_count$n_observed < 10)` ZIP codes observed fewer than 10 times. 
+
+Using arranged data we can see almost all ZIPs in Manhattan and Brooklyn appear 116 times;
+while many in Staten Island or the Bronx might appear only a dozen or fewer times. I think it's really depends on population density. Which frequent appearances indicate rich data and active listings; few appearances indicate an unpopular area, a change in listings, or missing data.
+
+#### Average rental price
+```{r}
+mean_price <- zip_zori_df |> 
+  mutate(year = lubridate::year(date)) |>
+  group_by(year, borough) |> 
+  summarise(average_price = mean(rent_price)) |> 
+  pivot_wider(
+    names_from = year,
+    values_from = average_price
+  )
+```
