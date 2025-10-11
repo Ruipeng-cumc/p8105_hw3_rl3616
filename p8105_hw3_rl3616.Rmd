@@ -267,3 +267,54 @@ nhanes_total <- nhanes_df |>
   select(-starts_with("min"))
 ```
 
+```{r}
+ggplot(nhanes_total, aes(x = age, y = total_activity, color = sex)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(se = FALSE, method = "loess") +
+  facet_wrap(~ education, ncol = 3) +
+  labs(
+    title = "Total Daily Activity vs Age by Sex and Education",
+    x = "Age (years)",
+    y = "total_activity",
+    color = "Sex"
+  ) +
+  theme_minimal()
+```
+
+The figure indicates that total daily activity declines with age across all education levels.
+Among participants with high school equivalent or higher education, females tend to have slightly greater activity levels than males.
+
+In contrast, within the less than high school group, males aged 40–80 show higher activity levels than females.
+
+The wide variation in total activity across education levels suggests more diverse lifestyle and occupational patterns.
+
+Interestingly, younger adults (aged 20–30) with less than high school education exhibit the highest overall activity levels, according to the trend line.
+
+While an individual 36-year-old male participant shows the lowest total MIMS value in the dataset—possibly reflecting limited movement or device-recording differences.
+
+```{r}
+accel_long <- nhanes_df |>
+  select(seqn, sex, education, starts_with("min")) |>
+  pivot_longer(
+    cols = starts_with("min"),
+    names_to = "minute",
+    values_to = "mims"
+  ) |>
+  mutate(
+    minute = as.numeric(str_remove(minute, "min")),
+  ) |>
+  group_by(education, sex, minute) |>
+  summarise(mean_mims = mean(mims, na.rm = TRUE), .groups = "drop")
+
+ggplot(accel_long, aes(x = minute, y = mean_mims, color = sex)) +
+  geom_line() +
+  geom_smooth() +
+  facet_wrap(~ education, ncol = 3) +
+  labs(
+    title = "24-hour Activity Patterns by Education Level and Sex",
+    x = "Minutes of day",
+    y = "Mean MIMs Activity",
+    color = "Sex"
+  ) +
+  theme_minimal(base_size = 12)
+```
