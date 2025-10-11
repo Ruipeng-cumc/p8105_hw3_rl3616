@@ -47,9 +47,11 @@ aisle_plot <- top_aisles |>
     ) +
   scale_y_continuous(labels = scales::comma) +
   theme_minimal(base_size = 8)
-
+aisle_plot
 ggsave("figures/Problem 1/aisle_plot.png", aisle_plot, width = 10, dpi = 300)
 ```
+
+According to the chart, we can see that `fresh vegetables` and `fresh fruits` aisles have a discontinuous leading sales volume, while `butter` has just exceeded the bottom line of 10,000.
 
 #### Part d)
 ```{r}
@@ -59,6 +61,12 @@ top_item_table <- instacart |>
   summarise(times_ordered = n()) |> 
   slice_max(times_ordered, n = 3)
 ```
+
+On the `baking ingredients aisle`, `Light Brown Sugar`, `Pure Baking Soda`, and `Cane Sugar` are the three most frequently purchased items.
+
+On the `dog food care aisle`, the top three items are `Snack Sticks Chicken & Rice Recipe Dog Treats`, `Organix Chicken & Brown Rice Recipe`, and `Small Dog Biscuits`; however, the overall number of purchases in this category is relatively low compared to others.
+
+On the `packaged vegetables and fruits aisle`, `Organic Baby Spinach`, `Organic Raspberries`, and `Organic Blueberries` have the highest order counts, with `Organic Baby Spinach` leading by a wide margin.
 
 #### Part e)
 ```{r}
@@ -75,6 +83,11 @@ mean_hour_table <- instacart |>
     values_from = mean_hour
   )
 ```
+
+Overall, `Coffee Ice Cream` is very popular every day except `Friday`, with an `mean order hour` of around 14 hours.
+
+Meanwhile, `Pink Lady Apples` only has longer `mean order hour` on `Sundays` and `Wednesdays`.
+
 
 # Problem 2
 
@@ -119,8 +132,8 @@ zip_count
 
 Using this data, we can see there are `r sum(zip_count$n_observed == 116)` ZIP codes are observed 116 times, and there are `r sum(zip_count$n_observed < 10)` ZIP codes observed fewer than 10 times. 
 
-Using arranged data we can see almost all ZIPs in Manhattan and Brooklyn appear 116 times;
-while many in Staten Island or the Bronx might appear only a dozen or fewer times. I think it's really depends on population density. Which frequent appearances indicate rich data and active listings; few appearances indicate an unpopular area, a change in listings, or missing data.
+Using arranged data we can see almost all ZIPs in `Manhattan` and `Brooklyn` appear 116 times;
+while many in `Staten Island` or the `Bronx` might appear only a dozen or fewer times. I think it's really depends on population density. Which frequent appearances indicate rich data and active listings; few appearances indicate an unpopular area, a change in listings, or missing data.
 
 #### Average rental price
 ```{r}
@@ -136,11 +149,11 @@ mean_price
 
 As we can clearly see in the table, the average rent in almost every borough has gradually increased over the past nine years.
 
-Manhattan (New York County) is highest throughout and shows the largest absolute increase (≈$1k+ from 2015 to 2024).
+`Manhattan` is highest throughout and shows the largest absolute increase (≈$1k+ from 2015 to 2024).
 
-Brooklyn (Kings) also climbs strongly, narrowing part of the gap with Queens after 2021.
+`Brooklyn` also climbs strongly, narrowing part of the gap with Queens after 2021.
 
-In contrast, Queens, Bronx and State Island saw modest growth.
+In contrast, `Queens`, `Bronx` and `Staten Island` saw modest growth.
 
 #### NYC Rental Prices by ZIP Code
 ```{r}
@@ -156,9 +169,9 @@ rental_prices_plot <- ggplot(zip_zori_df, aes(x = date, y = rent_price, group = 
 rental_prices_plot
 ```
 
-Overall, Brooklyn and Manhattan have more listings and higher prices, and Manhattan even have some extremely higher-priced zip zones. 
+Overall, `Brooklyn` and `Manhattan` have more listings and higher prices, and `Manhattan` even have some extremely higher-priced zip zones. 
 
-In addition, due to the COVID-19 pandemic in 2021, rents in these two areas have generally decreased, with Manhattan being the most noticeable (a huge dent). Meanwhile, rents in Queens haven't been affected much, and the Bronx has barely been affected.
+In addition, due to the COVID-19 pandemic in 2021, rents in these two areas have generally decreased, with `Manhattan` being the most noticeable (a huge dent). Meanwhile, rents in `Queens` haven't been affected much, and the `Bronx` has barely been affected.
 
 ```{r}
 # calculating rent_price 2023
@@ -180,7 +193,7 @@ rent_2023_plot
 
 Using this density plot, we can easily see the price ranges in which rental prices in each borough are concentrated. 
 
-For example, almost all rental prices in Staten Island are concentrated in the 2200-2600 range, so they appear very high peak in the chart. In contrast, the charts for Manhattan and Brooklyn are smooth, indicating that all types of rents appear. At the same time, Manhattan rental price peaks at around 4300, while Brooklyn rental prices peak at around 2700.
+For example, almost all rental prices in `Staten Island` are concentrated in the 2200-2600 range, so they appear very high peak in the chart. In contrast, the charts for `Manhattan` and `Brooklyn` are smooth, indicating that all types of rents appear. At the same time, `Manhattan` rental price peaks at around 4300, while `Brooklyn` rental prices peak at around 2700.
 
 
 ```{r}
@@ -235,7 +248,7 @@ sex_count_nhanes <- covar_df |>
 sex_count_nhanes
 ```
 
-Here we can see that among `r nrow(covar_df)` participants, the ratio of male and female for education level on `Less than high school` and `More than high school` are almost same; however, in `High school equivalent`, male are `r round(sex_count_nhanes$Male[2]/sex_count_nhanes$Female[2], 2)` times more than females.
+Here we can see that among `r nrow(covar_df)` participants, the ratio of `male` and female for education level on `Less than high school` and `More than high school` are almost same; however, in `High school equivalent`, `male` are `r round(sex_count_nhanes$Male[2]/sex_count_nhanes$Female[2], 2)` times more than `females`.
 
 #### Making density plot.
 ```{r}
@@ -252,11 +265,11 @@ ggplot(covar_df, aes(x = age, fill = sex)) +
 
 Based on the figure, distinct age distribution patterns are observed across education levels.
 
-For participants with `less than high school` education, most are concentrated above 40 years old. Female participants show a clear peak near age 70, whereas male participants have two smaller peaks around 45 and 70 years, suggesting a bimodal distribution.
+For participants with `less than high school` education, most are concentrated above 40 years old. `Female` participants show a clear peak near age 70, whereas `male` participants have two smaller peaks around 45 and 70 years, suggesting a bimodal distribution.
 
-For those with a `high school equivalent` education, males are relatively evenly distributed across ages, with slight peaks near 30 and 60 years. In contrast, females tend to be older on average, with the highest density around 70 years.
+For those with a `high school equivalent` education, `males` are relatively evenly distributed across ages, with slight peaks near 30 and 60 years. In contrast, `females` tend to be older on average, with the highest density around 70 years.
 
-Among participants with `more than high school` education, the majority are younger, with ages primarily below 50. Both males and females show a main peak near 30 years, though the proportion of females at this age is much higher.
+Among participants with `more than high school` education, the majority are younger, with ages primarily below 50. Both `males` and `females` show a main peak near 30 years, though the proportion of `females` at this age is much higher.
 
 ```{r}
 nhanes_total <- nhanes_df |>
@@ -282,15 +295,15 @@ ggplot(nhanes_total, aes(x = age, y = total_activity, color = sex)) +
 ```
 
 The figure indicates that total daily activity declines with age across all education levels.
-Among participants with high school equivalent or higher education, females tend to have slightly greater activity levels than males.
+Among participants with `high school equivalent or higher education`, `females` tend to have slightly greater activity levels than `males`.
 
-In contrast, within the less than high school group, males aged 40–80 show higher activity levels than females.
+In contrast, within the `less than high school` group, `males` aged 40–80 show higher activity levels than `females`.
 
 The wide variation in total activity across education levels suggests more diverse lifestyle and occupational patterns.
 
-Interestingly, younger adults (aged 20–30) with less than high school education exhibit the highest overall activity levels, according to the trend line.
+Interestingly, younger adults (aged 20–30) with `less than high school` education exhibit the highest overall activity levels, according to the trend line.
 
-While an individual 36-year-old male participant shows the lowest total MIMS value in the dataset—possibly reflecting limited movement or device-recording differences.
+While an individual 36-year-old `male` participant shows the lowest total MIMS value in the dataset—possibly reflecting limited movement or device-recording differences.
 
 ```{r}
 accel_long <- nhanes_df |>
@@ -302,19 +315,30 @@ accel_long <- nhanes_df |>
   ) |>
   mutate(
     minute = as.numeric(str_remove(minute, "min")),
+    hour   = (minute - 1) %/% 60
   ) |>
-  group_by(education, sex, minute) |>
+  group_by(education, sex, hour) |>
   summarise(mean_mims = mean(mims, na.rm = TRUE), .groups = "drop")
 
-ggplot(accel_long, aes(x = minute, y = mean_mims, color = sex)) +
-  geom_line() +
-  geom_smooth() +
+ggplot(accel_long, aes(x = hour, y = mean_mims, color = sex)) +
+  geom_line(size = 1) +
   facet_wrap(~ education, ncol = 3) +
   labs(
     title = "24-hour Activity Patterns by Education Level and Sex",
-    x = "Minutes of day",
+    x = "Hour of Day",
     y = "Mean MIMs Activity",
     color = "Sex"
   ) +
   theme_minimal(base_size = 12)
 ```
+Based on the plot, the mean MIMS activity across all education levels shows a clear daily rhythm —
+activity peaks between 7 AM and 8 PM, corresponding to typical daytime hours, and drops sharply during the night (around midnight to 5 AM).
+
+This pattern aligns well with regular human sleep–wake cycles.
+
+For participants with `high school or higher education`, `females` consistently show higher mean hourly activity during the daytime compared to `males`.
+In contrast, for those with `less than high school` education, `male` and `female` activity levels are almost identical throughout the day.
+
+Interestingly, participants with `less than high school` education display the highest daytime activity levels among all groups.
+
+This may suggest that individuals with lower educational attainment engage in more physically demanding occupations or routines, leading to higher accelerometer readings during working hours.
