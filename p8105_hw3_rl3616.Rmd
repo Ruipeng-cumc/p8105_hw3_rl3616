@@ -8,7 +8,7 @@ output: github_document
 # Problem 1
 
 Loading data
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(p8105.datasets)
 library(ggplot2)
 library(tidyverse)
@@ -28,12 +28,13 @@ Also, there are `r n_distinct(instacart$aisle)` different aisles in the dataset,
 ```{r}
 top_aisles <- instacart |> 
   count(aisle, sort = TRUE)
+top_aisles
 ```
 
 With this data, we can see the top 1 aisle that most items ordered from was "`r top_aisles$aisle[1]`" and follow up with "`r top_aisles$aisle[2]`" and "`r top_aisles$aisle[3]`"
 
 #### Part c)
-```{r}
+```{r, message=FALSE, warning=FALSE}
 aisle_plot <- top_aisles |> 
   filter(n > 10000) |> 
   ggplot(aes(x = reorder(aisle, n), y = n)) +
@@ -54,12 +55,13 @@ ggsave("figures/Problem 1/aisle_plot.png", aisle_plot, width = 10, dpi = 300)
 According to the chart, we can see that `fresh vegetables` and `fresh fruits` aisles have a discontinuous leading sales volume, while `butter` has just exceeded the bottom line of 10,000.
 
 #### Part d)
-```{r}
+```{r, message=FALSE, warning=FALSE}
 top_item_table <- instacart |> 
   filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) |> 
   group_by(aisle, product_name) |>
   summarise(times_ordered = n()) |> 
   slice_max(times_ordered, n = 3)
+top_item_table
 ```
 
 On the `baking ingredients aisle`, `Light Brown Sugar`, `Pure Baking Soda`, and `Cane Sugar` are the three most frequently purchased items.
@@ -69,7 +71,7 @@ On the `dog food care aisle`, the top three items are `Snack Sticks Chicken & Ri
 On the `packaged vegetables and fruits aisle`, `Organic Baby Spinach`, `Organic Raspberries`, and `Organic Blueberries` have the highest order counts, with `Organic Baby Spinach` leading by a wide margin.
 
 #### Part e)
-```{r}
+```{r, message=FALSE, warning=FALSE}
 mean_hour_table <- instacart |> 
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) |> 
   group_by(product_name, order_dow) |> 
@@ -82,6 +84,7 @@ mean_hour_table <- instacart |>
     names_from = order_dow,
     values_from = mean_hour
   )
+mean_hour_table
 ```
 
 Overall, `Coffee Ice Cream` is very popular every day except `Friday`, with an `mean order hour` of around 14 hours.
@@ -92,7 +95,7 @@ Meanwhile, `Pink Lady Apples` only has longer `mean order hour` on `Sundays` and
 # Problem 2
 
 #### Cleaning Zillow datasets(from homework 2)
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |> 
   janitor::clean_names() |>
@@ -120,7 +123,7 @@ zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |>
 
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 
 zip_count <- zip_zori_df |> 
   group_by(zip_code, county_name) |> 
@@ -136,7 +139,7 @@ Using arranged data we can see almost all ZIPs in `Manhattan` and `Brooklyn` app
 while many in `Staten Island` or the `Bronx` might appear only a dozen or fewer times. I think it's really depends on population density. Which frequent appearances indicate rich data and active listings; few appearances indicate an unpopular area, a change in listings, or missing data.
 
 #### Average rental price
-```{r}
+```{r, message=FALSE, warning=FALSE}
 mean_price <- zip_zori_df |> 
   group_by(year, borough) |> 
   summarise(average_price = mean(rent_price)) |> 
@@ -156,7 +159,7 @@ As we can clearly see in the table, the average rent in almost every borough has
 In contrast, `Queens`, `Bronx` and `Staten Island` saw modest growth.
 
 #### NYC Rental Prices by ZIP Code
-```{r}
+```{r, message=FALSE, warning=FALSE}
 rental_prices_plot <- ggplot(zip_zori_df, aes(x = date, y = rent_price, group = zip_code, color = borough)) +
   geom_line(alpha = 0.3) +
   facet_wrap(~ borough) +
@@ -167,13 +170,14 @@ rental_prices_plot <- ggplot(zip_zori_df, aes(x = date, y = rent_price, group = 
   theme_minimal(base_size = 8) |> 
   theme(legend.position = "none")
 rental_prices_plot
+ggsave("figures/Problem 2/NYC Rental Prices.png")
 ```
 
 Overall, `Brooklyn` and `Manhattan` have more listings and higher prices, and `Manhattan` even have some extremely higher-priced zip zones. 
 
 In addition, due to the COVID-19 pandemic in 2021, rents in these two areas have generally decreased, with `Manhattan` being the most noticeable (a huge dent). Meanwhile, rents in `Queens` haven't been affected much, and the `Bronx` has barely been affected.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 # calculating rent_price 2023
 rent_2023 <- zip_zori_df |> 
   filter(year == "2023") |> 
@@ -189,6 +193,7 @@ rent_2023_plot <- ggplot(rent_2023, aes(x = avg_rent_2023, fill = borough)) +
   ) +
   theme_minimal(base_size = 12)
 rent_2023_plot
+ggsave("figures/Problem 2/rent_2023_plot.png")
 ```
 
 Using this density plot, we can easily see the price ranges in which rental prices in each borough are concentrated. 
@@ -196,7 +201,7 @@ Using this density plot, we can easily see the price ranges in which rental pric
 For example, almost all rental prices in `Staten Island` are concentrated in the 2200-2600 range, so they appear very high peak in the chart. In contrast, the charts for `Manhattan` and `Brooklyn` are smooth, indicating that all types of rents appear. At the same time, `Manhattan` rental price peaks at around 4300, while `Brooklyn` rental prices peak at around 2700.
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 combined_plot <- (rental_prices_plot / rent_2023_plot) + 
   plot_layout(heights = c(2,3)) + 
   plot_annotation(
@@ -204,14 +209,14 @@ combined_plot <- (rental_prices_plot / rent_2023_plot) +
     subtitle = "Top: Trends over Time (2015–2024) | Bottom: 2023 Price Distribution by Borough",
     theme = theme(plot.title = element_text(size = 16, face = "bold"))
   )  
-
+combined_plot
 ggsave("results/Problem 2/combined_plot.png",
        width = 10, height = 12, dpi = 300)
 ```
 
 # Problem 3
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 covar_df <- read_csv("data/nhanes_covar.csv", skip = 4) |> 
   janitor::clean_names() |> 
   filter(age >= 21) |> 
@@ -239,7 +244,7 @@ nhanes_df <- covar_df |>
 
 
 #### Counting Male and Female.
-```{r}
+```{r, message=FALSE, warning=FALSE}
 sex_count_nhanes <- covar_df |>
   group_by(sex, education) |> 
   summarise(n = n()) |> 
@@ -251,7 +256,7 @@ sex_count_nhanes
 Here we can see that among `r nrow(covar_df)` participants, the ratio of `male` and female for education level on `Less than high school` and `More than high school` are almost same; however, in `High school equivalent`, `male` are `r round(sex_count_nhanes$Male[2]/sex_count_nhanes$Female[2], 2)` times more than `females`.
 
 #### Making density plot.
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggplot(covar_df, aes(x = age, fill = sex)) +
   geom_density(alpha = 0.5) +
   facet_wrap(~ education, ncol = 3) +
@@ -261,6 +266,7 @@ ggplot(covar_df, aes(x = age, fill = sex)) +
     y = "Density"
   ) +
   theme_minimal()
+ggsave("figures/Problem 3/Age Distributions by Education and Sex.png")
 ```
 
 Based on the figure, distinct age distribution patterns are observed across education levels.
@@ -280,7 +286,7 @@ nhanes_total <- nhanes_df |>
   select(-starts_with("min"))
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 ggplot(nhanes_total, aes(x = age, y = total_activity, color = sex)) +
   geom_point(alpha = 0.5) +
   geom_smooth(se = FALSE, method = "loess") +
@@ -292,6 +298,7 @@ ggplot(nhanes_total, aes(x = age, y = total_activity, color = sex)) +
     color = "Sex"
   ) +
   theme_minimal()
+ggsave("figures/Problem 3/Total Daily Activity vs Age by Sex.png")
 ```
 
 The figure indicates that total daily activity declines with age across all education levels.
@@ -305,7 +312,7 @@ Interestingly, younger adults (aged 20–30) with `less than high school` educat
 
 While an individual 36-year-old `male` participant shows the lowest total MIMS value in the dataset—possibly reflecting limited movement or device-recording differences.
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 accel_long <- nhanes_df |>
   select(seqn, sex, education, starts_with("min")) |>
   pivot_longer(
@@ -321,7 +328,7 @@ accel_long <- nhanes_df |>
   summarise(mean_mims = mean(mims, na.rm = TRUE), .groups = "drop")
 
 ggplot(accel_long, aes(x = hour, y = mean_mims, color = sex)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   facet_wrap(~ education, ncol = 3) +
   labs(
     title = "24-hour Activity Patterns by Education Level and Sex",
@@ -330,6 +337,7 @@ ggplot(accel_long, aes(x = hour, y = mean_mims, color = sex)) +
     color = "Sex"
   ) +
   theme_minimal(base_size = 12)
+ggsave("figures/Problem 3/24-hour Activity.png")
 ```
 Based on the plot, the mean MIMS activity across all education levels shows a clear daily rhythm —
 activity peaks between 7 AM and 8 PM, corresponding to typical daytime hours, and drops sharply during the night (around midnight to 5 AM).
