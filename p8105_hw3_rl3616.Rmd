@@ -208,17 +208,62 @@ covar_df <- read_csv("data/nhanes_covar.csv", skip = 4) |>
     education = recode(education,
                        "1" = "Less than high school",
                        "2" = "High school equivalent",
-                       "3" = "More than high school")               # by definition in .csv file.
-  )
+                       "3" = "More than high school"),     # by definition in .csv file.
+    education = factor(
+      education,
+      levels = c("Less than high school",
+                 "High school equivalent",
+                 "More than high school"),
+      ordered = TRUE                                       # give order to levels
+  ))
 
 accel_df <- read_csv("data/nhanes_accel.csv") |> 
   janitor::clean_names()
 
 nhanes_df <- covar_df |> 
-  left_join(accel_df, by = "seqn") |> 
-  pivot_longer(
-    cols = starts_with("min"),
-    names_to = "minute",
-    values_to = "mims"
-  )
+  left_join(accel_df, by = "seqn")
 ```
+
+
+#### Counting Male and Female.
+```{r}
+sex_count_nhanes <- covar_df |>
+  group_by(sex, education) |> 
+  summarise(n = n()) |> 
+  pivot_wider(names_from = sex, values_from = n) |> 
+  arrange(education)
+sex_count_nhanes
+```
+
+Here we can see that among `r nrow(covar_df)` participants, the ratio of male and female for education level on `Less than high school` and `More than high school` are almost same; however, in `High school equivalent`, male are `r round(sex_count_nhanes$Male[2]/sex_count_nhanes$Female[2], 2)` times more than females.
+
+#### Making density plot.
+```{r}
+ggplot(covar_df, aes(x = age, fill = sex)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~ education, ncol = 3) +
+  labs(
+    title = "Age Distributions by Education and Sex",
+    x = "Age (years)",
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+Based on the figure, distinct age distribution patterns are observed across education levels.
+
+For participants with `less than high school` education, most are concentrated above 40 years old. Female participants show a clear peak near age 70, whereas male participants have two smaller peaks around 45 and 70 years, suggesting a bimodal distribution.
+
+For those with a `high school equivalent` education, males are relatively evenly distributed across ages, with slight peaks near 30 and 60 years. In contrast, females tend to be older on average, with the highest density around 70 years.
+
+Among participants with `more than high school` education, the majority are younger, with ages primarily below 50. Both males and females show a main peak near 30 years, though the proportion of females at this age is much higher.
+
+```{r}
+nhanes_total <- nhanes_df |>
+  mutate(
+    total_activity = rowSums(across(starts_with("min")), na.rm = TRUE)
+  ) |>
+  distinct(seqn, .keep_all = TRUE) |> 
+  select(-starts_with("min"))
+```
+
