@@ -196,3 +196,24 @@ ggsave("results/Problem 2/combined_plot.png",
        width = 10, height = 12, dpi = 300)
 ```
 
+# Problem 3
+
+```{r}
+covar_df <- read_csv("data/nhanes_covar.csv", skip = 4) |> 
+  janitor::clean_names() |> 
+  filter(age >= 21) |> 
+  drop_na() |> 
+  mutate(
+    sex = recode(sex, "1" = "Male", "2" = "Female"),
+    education = recode(education,
+                       "1" = "Less than high school",
+                       "2" = "High school equivalent",
+                       "3" = "More than high school")               # by definition in .csv file.
+  )
+
+accel_df <- read_csv("data/nhanes_accel.csv") |> 
+  janitor::clean_names()
+
+nhanes_df <- covar_df |> 
+  left_join(accel_df, by = "seqn")
+```
