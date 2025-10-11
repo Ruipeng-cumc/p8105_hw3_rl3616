@@ -215,5 +215,10 @@ accel_df <- read_csv("data/nhanes_accel.csv") |>
   janitor::clean_names()
 
 nhanes_df <- covar_df |> 
-  left_join(accel_df, by = "seqn")
+  left_join(accel_df, by = "seqn") |> 
+  pivot_longer(
+    cols = starts_with("min"),
+    names_to = "minute",
+    values_to = "mims"
+  )
 ```
