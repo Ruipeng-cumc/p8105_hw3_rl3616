@@ -116,6 +116,7 @@ zip_count <- zip_zori_df |>
 zip_count
 
 ```
+
 Using this data, we can see there are `r sum(zip_count$n_observed == 116)` ZIP codes are observed 116 times, and there are `r sum(zip_count$n_observed < 10)` ZIP codes observed fewer than 10 times. 
 
 Using arranged data we can see almost all ZIPs in Manhattan and Brooklyn appear 116 times;
@@ -132,6 +133,7 @@ mean_price <- zip_zori_df |>
   )
 mean_price
 ```
+
 As we can clearly see in the table, the average rent in almost every borough has gradually increased over the past nine years.
 
 Manhattan (New York County) is highest throughout and shows the largest absolute increase (≈$1k+ from 2015 to 2024).
@@ -153,6 +155,7 @@ rental_prices_plot <- ggplot(zip_zori_df, aes(x = date, y = rent_price, group = 
   theme(legend.position = "none")
 rental_prices_plot
 ```
+
 Overall, Brooklyn and Manhattan have more listings and higher prices, and Manhattan even have some extremely higher-priced zip zones. 
 
 In addition, due to the COVID-19 pandemic in 2021, rents in these two areas have generally decreased, with Manhattan being the most noticeable (a huge dent). Meanwhile, rents in Queens haven't been affected much, and the Bronx has barely been affected.
@@ -174,13 +177,22 @@ rent_2023_plot <- ggplot(rent_2023, aes(x = avg_rent_2023, fill = borough)) +
   theme_minimal(base_size = 12)
 rent_2023_plot
 ```
+
 Using this density plot, we can easily see the price ranges in which rental prices in each borough are concentrated. 
+
 For example, almost all rental prices in Staten Island are concentrated in the 2200-2600 range, so they appear very high peak in the chart. In contrast, the charts for Manhattan and Brooklyn are smooth, indicating that all types of rents appear. At the same time, Manhattan rental price peaks at around 4300, while Brooklyn rental prices peak at around 2700.
 
 
 ```{r}
-combined_plot <- (rental_prices_plot / rent_2023_plot) + plot_layout(heights = c(2,1))
+combined_plot <- (rental_prices_plot / rent_2023_plot) + 
+  plot_layout(heights = c(2,3)) + 
+  plot_annotation(
+    title = "NYC Rental Price Overview",
+    subtitle = "Top: Trends over Time (2015–2024) | Bottom: 2023 Price Distribution by Borough",
+    theme = theme(plot.title = element_text(size = 16, face = "bold"))
+  )  
 
-ggsave("results/Problem 2/combined_plot.png")
+ggsave("results/Problem 2/combined_plot.png",
+       width = 10, height = 12, dpi = 300)
 ```
 
