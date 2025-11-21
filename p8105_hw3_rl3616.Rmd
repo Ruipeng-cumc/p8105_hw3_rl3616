@@ -1,11 +1,11 @@
 ---
-title: "p8105_hw3_rl3616"
+title: "Data Analysis and Visualization"
 author: "Ruipeng Li"
 date: "`r format(Sys.Date())`"
 output: github_document
 ---
 
-# Problem 1
+# Instacart Grocery Orders
 
 Loading data
 ```{r, message=FALSE, warning=FALSE}
@@ -92,9 +92,9 @@ Overall, `Coffee Ice Cream` is very popular every day except `Friday`, with an `
 Meanwhile, `Pink Lady Apples` only has longer `mean order hour` on `Sundays` and `Wednesdays`.
 
 
-# Problem 2
+# Zillow NYC Rental Prices (2015–2024)
 
-#### Cleaning Zillow datasets(from homework 2)
+#### Cleaning Zillow datasets
 ```{r, message=FALSE, warning=FALSE}
 
 zip_zori_df <- read_csv("data/Zip_zori_uc_sfrcondomfr_sm_month_NYC.csv") |> 
@@ -214,7 +214,7 @@ ggsave("results/Problem 2/combined_plot.png",
        width = 10, height = 12, dpi = 300)
 ```
 
-# Problem 3
+# NHANES Accelerometer Physical Activity
 
 ```{r, message=FALSE, warning=FALSE}
 covar_df <- read_csv("data/nhanes_covar.csv", skip = 4) |> 
